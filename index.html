@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudio Relax</title>
+<meta name="description" content="Convierte una imagen en un vídeo relajante largo con nieve, fuego, lluvia y sonido, gratis y en tu navegador.">
+<meta name="theme-color" content="#05060f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05060f;--panel:rgba(18,22,44,.62);--line:rgba(120,160,255,.18);--txt:#e8ecff;--mut:#8f9ac4;--c1:#38e8ff;--c2:#a46bff;--c3:#ff8a3d;--ok:#42f5a7;--bad:#ff5c7a}
+:root[data-theme="light"]{--bg:#05060f}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 Inter,system-ui,sans-serif}
+body{min-height:100vh;overflow-x:hidden}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+ radial-gradient(1200px 600px at 10% -10%,rgba(164,107,255,.25),transparent 60%),
+ radial-gradient(900px 500px at 110% 10%,rgba(56,232,255,.18),transparent 60%),
+ radial-gradient(800px 600px at 50% 120%,rgba(255,138,61,.12),transparent 60%)}
+.grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.25;background-image:linear-gradient(rgba(56,232,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(56,232,255,.12) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);animation:drift 30s linear infinite}
+@keyframes drift{to{background-position:0 48px,48px 0}}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:18px 16px 60px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.logo{width:44px;height:44px;border-radius:12px;background:conic-gradient(from 200deg,var(--c1),var(--c2),var(--c3),var(--c1));display:grid;place-items:center;box-shadow:0 0 24px rgba(56,232,255,.45);animation:spin 12s linear infinite}
+.logo::after{content:"";width:34px;height:34px;border-radius:9px;background:var(--bg) url(icon.svg) center/26px no-repeat}
+@keyframes spin{to{filter:hue-rotate(360deg)}}
+h1{font:700 22px Orbitron,sans-serif;letter-spacing:.06em;margin:0;background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{margin:0;color:var(--mut);font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.stage{position:sticky;top:12px}
+@media (max-width:900px){.stage{position:relative;top:0}}
+.screen{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 0 0 1px rgba(56,232,255,.08),0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(164,107,255,.15);background:#000}
+.screen canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;touch-action:none;cursor:crosshair}
+.hud{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{font:600 11px Orbitron,sans-serif;letter-spacing:.08em;padding:4px 8px;border-radius:999px;background:rgba(5,6,15,.6);border:1px solid var(--line);color:var(--c1);backdrop-filter:blur(6px)}
+.tag.rec{color:var(--bad);border-color:rgba(255,92,122,.5);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.hint{margin:8px 2px 0;color:var(--mut);font-size:13px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.panel h2{font:600 13px Orbitron,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px;display:flex;align-items:center;gap:8px;color:#cfd7ff}
+.num{width:22px;height:22px;border-radius:7px;display:inline-grid;place-items:center;font-size:11px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#05060f}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,.btn{font:600 14px Inter,sans-serif;color:var(--txt);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+button:hover,.btn:hover{border-color:var(--c1);box-shadow:0 0 16px rgba(56,232,255,.25)}
+button.on{background:linear-gradient(135deg,rgba(56,232,255,.22),rgba(164,107,255,.22));border-color:var(--c1);box-shadow:inset 0 0 12px rgba(56,232,255,.25)}
+.go{width:100%;justify-content:center;padding:14px;font:700 15px Orbitron,sans-serif;letter-spacing:.08em;background:linear-gradient(135deg,var(--c1),var(--c2));color:#05060f;border:0;box-shadow:0 0 30px rgba(56,232,255,.35)}
+.go:hover{filter:brightness(1.1)}
+.go:disabled{opacity:.5;cursor:wait}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.chips button{justify-content:center;padding:10px 6px;font-size:13px}
+.fx{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center}
+.fx label{display:flex;align-items:center;gap:8px;font-size:14px;min-width:118px;cursor:pointer}
+input[type=range]{width:100%;accent-color:var(--c1);height:28px}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--c1)}
+select,input[type=text]{font:500 14px Inter,sans-serif;color:var(--txt);background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+.lights{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.light{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.25);font-size:13px}
+.light.sel{outline:1px solid var(--c3)}
+.small{font-size:12px;color:var(--mut)}
+.bar{height:12px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;border:1px solid var(--line);margin:10px 0 6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));box-shadow:0 0 18px var(--c1);transition:width .3s}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.msg{font-size:13px;padding:8px 10px;border-radius:10px;background:rgba(66,245,167,.08);border:1px solid rgba(66,245,167,.25);margin-top:8px}
+.msg.warn{background:rgba(255,138,61,.08);border-color:rgba(255,138,61,.3)}
+details summary{cursor:pointer;font-weight:600}
+details ol,details ul{padding-left:20px;margin:8px 0;color:#cfd7ff}
+.drop{display:block;border:1.5px dashed var(--line);border-radius:14px;padding:16px;text-align:center;color:var(--mut);cursor:pointer;transition:.2s}
+.drop:hover{border-color:var(--c1);color:var(--txt)}
+input[type=file]{display:none}
+.sp{flex:1}
+</style>
+</head>
+<body>
+<div id="stars"></div><div class="grid"></div>
+<div class="wrap">
+<header>
+  <div class="logo"></div>
+  <div><h1>ESTUDIO RELAX</h1><p>Imagen + movimiento + sonido = vídeo relajante de horas. Gratis, en tu navegador.</p></div>
+</header>
+<div class="layout">
+  <section class="stage">
+    <div class="screen">
+      <canvas id="view" width="1280" height="720"></canvas>
+      <div class="hud"><span class="tag" id="tagLoop">BUCLE 60 S</span><span class="tag" id="tagMode" hidden>TOCA PARA COLOCAR</span><span class="tag rec" id="tagRec" hidden>CREANDO VÍDEO</span></div>
+    </div>
+    <p class="hint" id="hint">Vista previa en directo. El vídeo final sale en 1920 por 1080.</p>
+    <div class="row" style="margin-top:8px">
+      <button id="btnPlay">▶ Escuchar sonido</button>
+      <span class="sp"></span>
+      <button id="btnThumb">Miniatura</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2><span class="num">1</span>Imagen</h2>
+      <label class="drop" id="drop">Toca para elegir una imagen horizontal<br><span class="small">o arrástrala aquí. Sin imagen se usa una escena de ejemplo.</span>
+        <input type="file" id="fImg" accept="image/*"></label>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">2</span>Ambiente rápido</h2>
+      <div class="chips" id="presets"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">3</span>Efectos</h2>
+      <div class="fx" id="fxList"></div>
+      <div class="grid2" style="margin-top:10px">
+        <div><div class="small">Tono de color</div><select id="tint"><option value="none">Natural</option><option value="calido">Cálido</option><option value="frio">Frío</option></select></div>
+        <div><div class="small">Fuerza del tono</div><input type="range" id="tintAmt" min="0" max="1" step="0.05"></div>
+        <div><div class="small">Cámara lenta (zoom suave)</div><input type="range" id="kenburns" min="0" max="1" step="0.05"></div>
+        <div><div class="small">Bordes oscuros</div><input type="range" id="vignette" min="0" max="1" step="0.05"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">4</span>Fuego y velas</h2>
+      <div class="row">
+        <button id="addFire">🔥 Añadir fuego</button><button id="addCandle">🕯 Añadir vela</button>
+      </div>
+      <p class="small" style="margin:8px 0 0">Pulsa un botón y toca la imagen donde está la llama. Puedes arrastrar los puntos para moverlos.</p>
+      <div class="lights" id="lights"></div>
+      <div style="margin-top:8px"><div class="small">Brillo de las llamas</div><input type="range" id="lightAmt" min="0" max="1.5" step="0.05"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">5</span>Sonido</h2>
+      <div class="fx" id="sndList"></div>
+      <label class="drop" style="margin-top:10px">Añadir tu música libre de derechos (mp3)<br><span class="small" id="musInfo">Puedes elegir varias canciones. Se encadenan y se repiten sin cortes.</span>
+        <input type="file" id="fMus" accept="audio/*" multiple></label>
+      <div class="row" style="margin-top:8px"><button id="clearMus">Quitar música</button></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">6</span>Crear vídeo</h2>
+      <div class="grid2">
+        <div><div class="small">Duración</div><select id="dur"><option value="1">1 minuto (prueba)</option><option value="10">10 minutos</option><option value="30">30 minutos</option><option value="60">1 hora</option><option value="120">2 horas</option><option value="180">3 horas</option><option value="480">8 horas</option></select></div>
+        <div><div class="small">Calidad</div><select id="quality"><option value="8">Alta</option><option value="5" selected>Media</option><option value="3">Ligera (móvil)</option></select></div>
+        <div><div class="small">Largo del bucle</div><select id="loop"><option value="30">30 segundos</option><option value="60">60 segundos</option><option value="120">2 minutos</option></select></div>
+        <div><div class="small">Imágenes por segundo</div><select id="fps"><option value="24">24</option><option value="30">30</option></select></div>
+      </div>
+      <button class="go" id="btnExport" style="margin-top:12px">CREAR VÍDEO MP4</button>
+      <div id="prog" hidden><div class="bar"><i id="barFill"></i></div><div class="small" id="progTxt"></div><button id="btnCancel" style="margin-top:8px">Cancelar</button></div>
+      <div id="outMsg"></div>
+      <p class="small" id="support"></p>
+    </div>
+
+    <div class="panel">
+      <h2><span class="num">7</span>Miniatura</h2>
+      <input type="text" id="thumbTitle" placeholder="Título grande opcional, por ejemplo: Chimenea 3 horas">
+      <div class="row" style="margin-top:8px"><button id="btnThumb2">Descargar miniatura</button></div>
+    </div>
+
+    <div class="panel">
+      <details><summary>Cómo sacarle partido</summary>
+        <ol>
+          <li>Crea una imagen horizontal con una IA gratis, por ejemplo Gemini o Bing Image Creator. Pide formato 16 por 9.</li>
+          <li>Elige un ambiente rápido y ajusta los efectos.</li>
+          <li>Si hay chimenea o velas, coloca los puntos de fuego encima de las llamas.</li>
+          <li>Pon sonido. Los sonidos de esta web son propios, sin derechos. Si añades música, usa la Biblioteca de audio de YouTube o Pixabay.</li>
+          <li>Prueba con 1 minuto. Si te gusta, crea el vídeo largo.</li>
+          <li>Sube el vídeo a YouTube con la miniatura.</li>
+        </ol>
+        <ul>
+          <li>Cada vídeo con escena distinta, para que YouTube no lo vea como contenido repetido.</li>
+          <li>En ordenador con Chrome o Edge el vídeo se guarda directo en disco y puede durar horas.</li>
+          <li>En el móvil mejor vídeos de hasta 30 minutos y calidad ligera.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+</div>
+</div>
+<script src="mp4-muxer.js"></script>
+<script src="engine.js"></script>
+<script src="audio.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
